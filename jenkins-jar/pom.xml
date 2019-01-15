@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.kong</groupId>
+  <artifactId>jenkins-jar</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
+  <name>jenkins-jar</name>
+  <description>Demo project for jenkins jar deploy</description>
+
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>1.5.3.RELEASE</version>
+    <relativePath/> <!-- lookup parent from repository -->
+  </parent>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <java.version>1.8</java.version>
+  </properties>
+
+  <dependencies>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-actuator</artifactId>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <finalName>jenkins-jar-${env}</finalName>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <encoding>UTF-8</encoding>
+          <source>1.8</source>
+          <target>1.8</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>2.4</version>
+        <configuration>
+          <includes>
+            <include>**/*.class</include>
+            <include>META-INF/**</include>
+          </includes>
+          <excludes>
+            <exclude>*.properties</exclude>
+            <exclude>*.xml</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>2.4</version>
+        <executions>  <!--执行器 mvn assembly:assembly-->
+          <execution>
+            <id>jenkins-jar-zip</id>
+            <!--名字任意 -->
+            <phase>package</phase>
+            <!-- 绑定到package生命周期阶段上 -->
+            <goals>
+              <goal>single</goal>
+              <!-- 只运行一次 -->
+            </goals>
+            <configuration>
+              <descriptors> <!--描述文件路径-->
+                <descriptor>src/main/assembly/descriptor.xml</descriptor>
+              </descriptors>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <!--调试时打开，打包时请注释。要不然，会把LIB下所有的JAR包打进去-->
+      <!--<plugin>-->
+      <!--<groupId>org.springframework.boot</groupId>-->
+      <!--<artifactId>spring-boot-maven-plugin</artifactId>-->
+      <!--<configuration>-->
+      <!--<mainClass>com.infinitusint.StartConsumerApplication</mainClass>-->
+      <!--</configuration>-->
+      <!--<dependencies>-->
+      <!--<dependency>-->
+      <!--<groupId>org.springframework</groupId>-->
+      <!--<artifactId>springloaded</artifactId>-->
+      <!--<version>1.2.1.RELEASE</version>-->
+      <!--</dependency>-->
+      <!--</dependencies>-->
+      <!--</plugin>-->
+    </plugins>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>dev</id>
+      <properties>
+        <env>dev</env>
+      </properties>
+    </profile>
+    <profile>
+      <id>test</id>
+      <properties>
+        <env>test</env>
+      </properties>
+    </profile>
+    <profile>
+      <id>pro</id>
+      <properties>
+        <env>pro</env>
+      </properties>
+    </profile>
+  </profiles>
+
+</project>
